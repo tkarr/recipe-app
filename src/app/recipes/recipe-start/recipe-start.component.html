@@ -1,0 +1,40 @@
+<form class="form-group" #f="ngForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+        <label for="name">Recipe Name</label>
+        <input class="form-control" type="text" id="name" name="name" ngModel required #name="ngModel">
+        <span *ngIf="name.touched && !name.valid" class="help-block">Name is required</span>
+    </div>
+    
+    <div class="form-group">
+        <label for="description">Description</label>
+        <input class="form-control" type="text" id="description" name="description" ngModel required #description="ngModel">
+        <span *ngIf="description.touched && !description.valid" class="help-block">Description is required</span>
+    </div>
+    
+    <div class="form-group">
+        <label for="imagePath">Image Path</label>
+        <input class="form-control" type="text" id="imagePath" name="imagePath" ngModel required #imagePath="ngModel">
+        <span *ngIf="imagePath.touched && !imagePath.valid" class="help-block">Image path is required</span>
+    </div>
+
+    <form class="form-group" #ingForm="ngForm">
+        <label for="ingredients">Ingredients</label>
+        <ul class="list-group list-group-light">
+            <li class="list-group-item" *ngFor="let ing of ingredients">{{ing.name}} ({{ing.amount}})</li>
+        </ul>
+        <div class="col-xs-12">
+            <label for="ingredients">Ingredient name</label>
+            <input class="form-control" type="text" id="name" name="name" ngModel required #ingName="ngModel">
+            <span *ngIf="ingName.touched && !ingName.valid" class="help-block">Ingredient Name is required</span>
+            <label for="amount">Amount</label>
+            <input class="form-control" type="text" id="amount" name="amount" ngModel required #amount="ngModel">
+            <span *ngIf="amount.touched && !amount.valid" class="help-block">Amount is required</span>
+            <button type="button" class="btn btn-default" (click)="addIngredient(ingForm)">Add Ingredient</button>
+        </div>        
+    </form>
+    
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Add Recipe</button>
+    </div>
+    
+</form>
