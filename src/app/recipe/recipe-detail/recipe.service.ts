@@ -12,13 +12,16 @@ export class RecipeService {
     private recipes: Recipe[];
 
     constructor(private http : HttpClient) {
-        this.http.get<any>('https://localhost:7248/api/recipes').subscribe((data: Recipe[]) => {
+        this.http.get<Recipe[]>('https://localhost:7248/api/recipes').subscribe((data: Recipe[]) => {
             this.recipes = data;
         });
         this.recipesSub.next(this.recipes);
     }
 
     getRecipes() :Recipe[] {
+        this.http.get<Recipe[]>('https://localhost:7248/api/recipes').subscribe((data: Recipe[]) => {
+            this.recipes = data;
+        });
         return this.recipes.slice();
     }
 
