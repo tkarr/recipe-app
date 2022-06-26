@@ -1,18 +1,20 @@
 import { Recipe } from '../recipe.model';
 import { Ingredient } from 'src/app/shared/ingredient';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, Subscription } from 'rxjs';
+import { Injectable } from '@angular/core';  
+import { HttpClient } from '@angular/common/http';
 
+@Injectable()
 export class RecipeService {
 
     recipeSelected = new Subject<Recipe>();
     recipesSub = new Subject<Recipe[]>();
-    private recipes: Recipe[] = 
-    [new Recipe('Fried Rice', 'Fried Rice with veggies',
-    'https://therecipecritic.com/wp-content/uploads/2019/07/easy_fried_rice.jpg', [new Ingredient('Rice', '1'), new Ingredient('Egg', '2') ], 1),
-    new Recipe('Hummus', 'Garlic and lemon hummus', 'https://therecipecritic.com/wp-content/uploads/2019/07/easy_fried_rice.jpg', [new Ingredient('Chickpeas', '1'), new Ingredient('Tahini', '2') ], 2)];
+    private recipes: Recipe[];
 
-    constructor() {
-        console.log("recipe servicew created");
+    constructor(private http : HttpClient) {
+        this.http.get<any>('https://localhost:7248/api/recipes').subscribe((data: Recipe[]) => {
+            this.recipes = data;
+        });
         this.recipesSub.next(this.recipes);
     }
 
