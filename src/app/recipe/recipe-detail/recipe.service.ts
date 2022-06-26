@@ -1,12 +1,20 @@
 import { Recipe } from '../recipe.model';
 import { Ingredient } from 'src/app/shared/ingredient';
-import { Subject, Observable, Subscription } from 'rxjs';
+import { Subject, Observable, Subscription, throwError } from 'rxjs';
+import { catchError, retry, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';  
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
+
+const httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type':  'application/json; charset=utf-8',
+      'Access-Control-Allow-Origin': '*'    
+    })
+  };
 
 @Injectable()
 export class RecipeService {
-
     recipeSelected = new Subject<Recipe>();
     recipesSub = new Subject<Recipe[]>();
     private recipes: Recipe[];
@@ -33,8 +41,14 @@ export class RecipeService {
     }
 
     addRecipe(recipe: Recipe) {
+        const body = JSON.stringify(recipe);
+        console.log(body);
+
         this.recipes.push(recipe);
         this.recipesSub.next(this.recipes);
+
+        this.http.post('https://localhost:7248/api/recipes', body, httpOptions)
+        .subscribe();
     }
 
     deleteRecipe(id: number) {
@@ -47,4 +61,14 @@ export class RecipeService {
         this.recipes = filtered;
         this.recipesSub.next(this.recipes);
     }
+
+    private extractData(res: any) {
+        let body = res;
+        return body;
+    }
+
+    private handleError(error: HttpErrorResponse) {
+        console.error(error.message || error);
+	    return throwError(error);
+      }
 }
