@@ -6,65 +6,62 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 
-const httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type':  'application/json; charset=utf-8',
-      'Access-Control-Allow-Origin': '*'    
-    })
-  };
-
 @Injectable()
 export class RecipeService {
     recipeSelected = new Subject<Recipe>();
     recipesSub = new Subject<Recipe[]>();
     private recipes: Recipe[];
+    private apiUrl = 'https://localhost:7248/api';
+    private httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json; charset=utf-8',
+          'Access-Control-Allow-Origin': '*'    
+        })
+      };
 
     constructor(private http : HttpClient) {
-        this.http.get<Recipe[]>('https://localhost:7248/api/recipes').subscribe((data: Recipe[]) => {
+        this.http.get<Recipe[]>(this.apiUrl + '/recipes').subscribe((data: Recipe[]) => {
             this.recipes = data;
         });
         this.recipesSub.next(this.recipes);
     }
 
-    getRecipes() :Recipe[] {
-        this.http.get<Recipe[]>('https://localhost:7248/api/recipes').subscribe((data: Recipe[]) => {
-            this.recipes = data;
-        });
-        return this.recipes.slice();
+    //service calls return an observable
+    //can be called in template using async pipe
+    getRecipes(): Observable<Recipe> {
+        return this.http
+            .get<Recipe>(this.apiUrl + '/recipes')
+            .pipe(retry(1), catchError(this.handleError));
     }
 
-    getRecipe(id: number): Recipe {
-        const recipe = this.recipes.find((r) => {
-            return r.id === id;
-        });
-        return recipe;
+    getRecipe(id: number): Observable<Recipe> {
+        return this.http
+            .get<Recipe[]>(this.apiUrl + '/recipes/' + id)
+            .pipe(retry(1), catchError(this.handleError));
     }
 
-    addRecipe(recipe: Recipe) {
-        const body = JSON.stringify(recipe);
-        console.log(body);
-
-        this.recipes.push(recipe);
-        this.recipesSub.next(this.recipes);
-
-        this.http.post('https://localhost:7248/api/recipes', body, httpOptions)
-        .subscribe();
+    addRecipe(recipe: Recipe): Observable<Recipe>{
+        return this.http
+            .post<Recipe>(this.apiUrl + '/recipes/', JSON.stringify(recipe), this.httpOptions)
+            .pipe(
+                retry(1),
+                catchError(this.handleError)
+            );
     }
 
     deleteRecipe(id: number) {
-        var filtered = this.recipes.filter((recipe: Recipe) => {
+        var recipe = this.recipes.find((recipe: Recipe) => {
             if (recipe.id !== id) {
                 return recipe;
             };
         });
 
-        this.recipes = filtered;
-        this.recipesSub.next(this.recipes);
-    }
-
-    private extractData(res: any) {
-        let body = res;
-        return body;
+        return this.http
+            .delete<Recipe>(this.apiUrl + '/recipes/' + recipe.id, this.httpOptions)
+            .pipe(
+                retry(1),
+                catchError(this.handleError)
+            );
     }
 
     private handleError(error: HttpErrorResponse) {

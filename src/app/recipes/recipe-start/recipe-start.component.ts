@@ -20,8 +20,6 @@ export class RecipeStartComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.form.value.name);
-
     var newId = this.recipeService.getRecipes().length + 1;
     var newRecipe = new Recipe(this.form.value.name,
                            this.form.value.description,

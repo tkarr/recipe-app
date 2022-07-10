@@ -17,8 +17,6 @@ export class ShoppingListEditComponent implements OnInit, AfterViewInit {
 
   @ViewChild('f') newIngredientForm: NgForm;
 
-  @Output() newIngredientAdded = new EventEmitter<Ingredient>();
-
   constructor(private slService: ShoppingListService) {
     
   }
