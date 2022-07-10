@@ -3,6 +3,7 @@ import { NgForm, FormGroup } from '@angular/forms';
 import { RecipeService } from '../../recipe/recipe-detail/recipe.service';
 import { Recipe } from 'src/app/recipe/recipe.model';
 import { Ingredient } from '../../shared/ingredient';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-recipe-start',
@@ -13,7 +14,7 @@ export class RecipeStartComponent implements OnInit {
   @ViewChild('f') form: NgForm;
 
   ingredients: Ingredient[];
-  constructor(private recipeService: RecipeService) { }
+  constructor(private recipeService: RecipeService, private router: Router) { }
 
   ngOnInit(): void {
     this.ingredients = [];
@@ -28,6 +29,7 @@ export class RecipeStartComponent implements OnInit {
     this.recipeService.addRecipe(newRecipe).subscribe();
     this.form.reset();
     this.ingredients = [];
+    this.router.navigate(['../']);
   }
 
   addIngredient(ingForm: NgForm) {

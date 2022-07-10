@@ -40,7 +40,6 @@ export class RecipeService {
     }
 
     addRecipe(recipe: Recipe): Observable<Recipe>{
-        console.log(JSON.stringify(recipe));
         return this.http
             .post<Recipe>(this.apiUrl + '/recipes/', JSON.stringify(recipe), this.httpOptions)
             .pipe(
