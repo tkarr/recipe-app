@@ -26,7 +26,7 @@ export class RecipeEditComponent implements OnInit, AfterViewInit {
         this.editMode = params['id'] != null;
       }
       );
-    this.recipe = this.recipeService.getRecipe(this.id);
+    this.recipeService.getRecipe(this.id).subscribe((recipe) => {this.recipe = recipe});
   }
 
   ngAfterViewInit(): void {

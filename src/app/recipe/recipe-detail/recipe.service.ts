@@ -1,6 +1,5 @@
 import { Recipe } from '../recipe.model';
-import { Ingredient } from 'src/app/shared/ingredient';
-import { Subject, Observable, Subscription, throwError } from 'rxjs';
+import { Subject, Observable, throwError } from 'rxjs';
 import { catchError, retry, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';  
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -28,7 +27,7 @@ export class RecipeService {
 
     //service calls return an observable
     //can be called in template using async pipe
-    getRecipes(): Observable<Recipe> {
+    getRecipes(): Observable<Recipe | Recipe[]> {
         return this.http
             .get<Recipe>(this.apiUrl + '/recipes')
             .pipe(retry(1), catchError(this.handleError));
@@ -36,11 +35,12 @@ export class RecipeService {
 
     getRecipe(id: number): Observable<Recipe> {
         return this.http
-            .get<Recipe[]>(this.apiUrl + '/recipes/' + id)
+            .get<Recipe>(this.apiUrl + '/recipes/' + id)
             .pipe(retry(1), catchError(this.handleError));
     }
 
     addRecipe(recipe: Recipe): Observable<Recipe>{
+        console.log(JSON.stringify(recipe));
         return this.http
             .post<Recipe>(this.apiUrl + '/recipes/', JSON.stringify(recipe), this.httpOptions)
             .pipe(
@@ -49,7 +49,7 @@ export class RecipeService {
             );
     }
 
-    deleteRecipe(id: number) {
+    deleteRecipe(id: number): Observable<Recipe> {
         var recipe = this.recipes.find((recipe: Recipe) => {
             if (recipe.id !== id) {
                 return recipe;
@@ -66,6 +66,7 @@ export class RecipeService {
 
     private handleError(error: HttpErrorResponse) {
         console.error(error.message || error);
+        window.alert(error.message);
 	    return throwError(error);
       }
 }

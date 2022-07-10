@@ -1,25 +1,24 @@
 import { Ingredient } from '../../shared/ingredient';
-import { Subject, Observable, Subscription, throwError } from 'rxjs';
-import { catchError, retry, map } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { Injectable } from '@angular/core';  
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
-import { Recipe } from 'src/app/recipe/recipe.model';
-
-const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type':  'application/json; charset=utf-8',
-    'Access-Control-Allow-Origin': '*'    
-  })
-};
 
 @Injectable()
 export class ShoppingListService {
+    private apiUrl = 'https://localhost:7248/api';
+    private httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json; charset=utf-8',
+          'Access-Control-Allow-Origin': '*'    
+        })
+      };
+
     ingredientsChanged = new Subject<Ingredient[]>();
     private ingredients: Ingredient[];
 
     constructor(private http : HttpClient) {
-      this.http.get<Ingredient[]>('https://localhost:7248/api/shopping-list').subscribe((data: Ingredient[]) => {
+      this.http.get<Ingredient[]>(this.apiUrl + '/shopping-list').subscribe((data: Ingredient[]) => {
           this.ingredients = data;
       });
       this.ingredientsChanged.next(this.ingredients);

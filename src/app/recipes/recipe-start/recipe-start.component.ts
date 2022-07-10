@@ -20,14 +20,12 @@ export class RecipeStartComponent implements OnInit {
   }
 
   onSubmit() {
-    var newId = this.recipeService.getRecipes().length + 1;
     var newRecipe = new Recipe(this.form.value.name,
                            this.form.value.description,
                            this.form.value.imagePath,
-                           this.ingredients,
-                           newId);
+                           this.ingredients);
                            
-    this.recipeService.addRecipe(newRecipe);
+    this.recipeService.addRecipe(newRecipe).subscribe();
     this.form.reset();
     this.ingredients = [];
   }

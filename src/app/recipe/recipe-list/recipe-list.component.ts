@@ -11,10 +11,7 @@ import { Subscription } from 'rxjs';
 })
 export class RecipeListComponent implements OnInit {
 
-  //recipes: Recipe[] = [new Recipe('Fried Rice', 'Fried Rice with veggies', 'https://therecipecritic.com/wp-content/uploads/2019/07/easy_fried_rice.jpg'),
-  //new Recipe('Hummus', 'Garlic and lemon hummus', 'https://therecipecritic.com/wp-content/uploads/2019/07/easy_fried_rice.jpg')];
   recipes: Recipe[];
-  private recipeSubscription: Subscription;
   
   constructor(private recipeService: RecipeService,
               private router: Router,
@@ -25,16 +22,6 @@ export class RecipeListComponent implements OnInit {
     this.recipeService.getRecipes().subscribe((recipeList: Recipe[]) => {
       this.recipes = recipeList;
     });
-
-    //this.recipeService.getRecipes().subscribe({
-    //  next(recipes) { this.recipes = recipes; },
-    //  error(err) { console.log("Error loading recipe list:" + err)},
-    //  complete() { console.log("Done loading recipe list")}
-    //});
-
-    this.recipeSubscription = this.recipeService.recipesSub.subscribe((recipes: Recipe[]) => {
-      this.recipes = recipes;
-    })
   }
 
   onNewRecipe() {
