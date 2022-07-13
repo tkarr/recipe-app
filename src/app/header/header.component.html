@@ -9,6 +9,32 @@
                 <li routerLinkActive="active"><a routerLink="/shopping-list">Shopping</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <!-- <li>
+                    <div class="input-group">
+                        <div class="form-outline">
+                            <input id="search-input" type="search" id="form1" class="form-control" />
+                          </div>
+                          <button id="search-button" type="button" class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                          </button>
+                        
+                    </div>
+                </li> -->
+                <!-- split for now to make inline -->
+                <li>
+                    <div class="form-outline">
+                        <li class="dropdown" appDropdown>
+                            <input #searchInput type="search" class="form-control dropdown-toggle" (keyup)="search(searchInput.value)"/>
+                            <ul class="dropdown-menu" [ngStyle]="{'width.px': searchInput.offsetWidth }">
+                                <li *ngFor="let recipe of filteredRecipes"><a style="cursor: pointer;">{{recipe.name}}</a></li>
+                            </ul>
+                        </li>
+                      </div>
+                </li>
+                <li>
+                    <button type="button" class="btn btn-primary" (click)="search(searchInput.value)">Search</button>
+                </li>
+                  
                 <li class="dropdown" appDropdown>
                     <a style="cursor: pointer;" class="dropdown-toggle" role="button">Manage<span class="caret"></span></a>
                     <ul class="dropdown-menu">

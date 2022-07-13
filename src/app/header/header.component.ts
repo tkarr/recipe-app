@@ -1,4 +1,6 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { RecipeService } from '../recipe/recipe-detail/recipe.service';
+import { Recipe } from '../recipe/recipe.model';
 
 @Component({
   selector: 'app-header',
@@ -8,22 +10,19 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 export class HeaderComponent implements OnInit {
 
   @Output() shoppingListToggled: EventEmitter<boolean> = new EventEmitter<boolean>();
-  isShoppingListDisplayed = false;
-  isRecipeBookDisplayed = false;
+  recipes: Recipe[];
+  filteredRecipes: Recipe[];
 
-  constructor() { }
+
+  constructor(private recipeService: RecipeService) { }
 
   ngOnInit(): void {
+    this.recipeService.getRecipes()
+                      .subscribe((serviceRecipes: Recipe[]) => {this.recipes = serviceRecipes})
   }
 
-  toggleShoppingList(val: boolean): void {
-    this.isShoppingListDisplayed = val;
-    this.isRecipeBookDisplayed = !val;
-    this.shoppingListToggled.emit(this.isShoppingListDisplayed);
-    console.log("toggle shopping list: " + this.isShoppingListDisplayed);
-  }
-
-  toggleRecipeBook(): void {
-    this.isRecipeBookDisplayed = !this.isRecipeBookDisplayed;
+  search(name: string) {
+    const filtered = this.recipes.filter((recipe) => {return recipe.name.includes(name)})
+    this.filteredRecipes = filtered;
   }
 }

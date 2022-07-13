@@ -2,7 +2,7 @@ import { Recipe } from '../recipe.model';
 import { Subject, Observable, throwError } from 'rxjs';
 import { catchError, retry, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';  
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()
@@ -34,8 +34,12 @@ export class RecipeService {
     }
 
     getRecipe(id: number): Observable<Recipe> {
+        let queryParams = new HttpParams();
+        queryParams = queryParams.append("id", id);
+
+
         return this.http
-            .get<Recipe>(this.apiUrl + '/recipes/' + id)
+            .get<Recipe>(this.apiUrl + '/recipes/', {params:queryParams})
             .pipe(retry(1), catchError(this.handleError));
     }
 
@@ -54,9 +58,13 @@ export class RecipeService {
                 return recipe;
             };
         });
+        console.log("Recipe to delete: ", recipe);
+
+        let queryParams = new HttpParams();
+        queryParams = queryParams.append("id", id);
 
         return this.http
-            .delete<Recipe>(this.apiUrl + '/recipes/' + recipe.id, this.httpOptions)
+            .delete<Recipe>(this.apiUrl + '/recipes/', {params:queryParams, headers:this.httpOptions.headers})
             .pipe(
                 retry(1),
                 catchError(this.handleError)
